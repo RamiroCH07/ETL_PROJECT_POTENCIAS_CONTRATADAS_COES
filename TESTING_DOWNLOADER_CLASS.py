@@ -1,53 +1,27 @@
 from DOWNLOADER import Downloader_files
 
-downloader = Downloader_files()
-#DOWNLOADER
-#DESCARGA DEL AARCHVO SUBIDO AL COES
-downloader.FINISH_DOWNLOAD_FILE()
-#EXTRACTER
-
-
-
 #%%
 
-#with open("TEST.html","w",encoding = "utf-8") as f:
-#    f.write(html)
+## TESTEANDO FUNCIONALIDADES BASCIAS DE LA CLASE DOWNLOADER
+# OBJETIVO: VERIFICAR LA CORRECTA FUNCIONALIDAD DEL MÉTODO"_go_potencias_contratadas"
+obj_downloader = Downloader_files()
+obj_downloader.go_potencias_contratadas()
+
+### TESTEANDO LA FUNCIONALIDAD DE DESCARGA DE ARCHIVOS EXCEL DE LA CLASE DOWNLOADER
 #%%
-
-print(r'HOLA MUNDO ' 
-      r'hola mundo ' 
-      r'HI WOrdl')    
-
-year = 789
-xpath_year = (r'//*[@id='
-             r'Mercado Mayorista/'
-             r'Liquidaciones del MME/'
-             r'01 Mercado de Corto Plazo/'
-             r'Potencias Contratadas/'
-             fr'{year}')
-             
-print(xpath_year)      
+# OBJETIVO: DESCARGAR EL ARCHIVO DEL MES ENERO DEL 2023
+obj_downloader = Downloader_files()
+obj_downloader.downloading_file('01', '2023')
+obj_downloader.CLOSE_DRIVER()
 
 #%%
+# OBJETIVO: DESCARGAR TODOS LOS ARCHIVOS DEL AÑO 2022
+obj_downloader = Downloader_files()
+months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+year = '2022'
 
-test = ['2023', '2022', '2021', '2020', '2019', '2018']
+for month in months:
+    obj_downloader.downloading_file(month, year)
 
-#%%
 
-with open('LAST_DOWNLOADER_FILE.txt','w',encoding = 'utf-8-sig') as f:
-    f.write('06_junio_2023')
-    
-    #%%
-    
-f = open('LAST_DOWNLOADER_FILE.txt','r')
-code = f.read()
-f.close()
-print(code)
-#%%
-def __get_last_code_file():
-    f = open('LAST_DOWNLOADER_FILE.txt','r')
-    code = f.read()
-    f.close()
-    return code
-
-print(__get_last_code_file())
+#%%%

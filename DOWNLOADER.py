@@ -31,6 +31,7 @@ class Downloader_files:
             '11':'Noviembre',
             '12':'Diciembre'
             }
+    
         
     def go_potencias_contratadas(self):
         self.driver.maximize_window()
@@ -48,7 +49,7 @@ class Downloader_files:
         sleep(4)
      
         
-    def recognize_last_file_version(self):
+    def _recognize_last_file_version(self):
         body = self.driver.execute_script("return document.body")
         source = body.get_attribute('innerHTML')
         soup = BeautifulSoup(source,'html.parser')
@@ -102,7 +103,7 @@ class Downloader_files:
         month_button.click()
         sleep(5)
         #IDENTIFICANDO LA ULTIMA VERSION DEL ARCHIVO
-        file_term = self.recognize_last_file_version()
+        file_term = self._recognize_last_file_version()
         
         xpath_download_file = (r'//*[@id='
                      r'"Mercado Mayorista/'
@@ -119,7 +120,23 @@ class Downloader_files:
         download_button.click()
         sleep(25)
         
-        self.driver.close()
+        # IDENTIFICAR EL ULTIMO ARCHIVO DESCARGADO
+        folder_path = r'C:\Users\rchavez\Downloads'#r'C:\Users\Toshiba\Downloads'
+        file_type = r'\*xlsx'
+        files = glob.glob(folder_path + file_type)
+        max_file = max(files, key=os.path.getctime)
+        # Movemos el archivo descargado a una carpeta dentro del proyecto
+        source = f'{max_file}'
+        ## Nuevo nombre de archivo
+        destination = f"EXCEL_FILES/{month}_{self.meses[month]}_{year}.xlsx"
+        shutil.move(source,destination)
+       
+        ## RETORNA A POTENCIAS CONTRATADAS
+        xpath_pot_cont = '//*[@id="browserDocument"]/div[1]/ul/li[3]/a'
+        pot_cont_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((
+        By.XPATH, xpath_pot_cont)))
+        pot_cont_button.click()
+        sleep(5)
         
         
     #DESCARGANDO EL ULTIMO ARCHIVO     
@@ -177,7 +194,7 @@ class Downloader_files:
             month_button.click()
             sleep(5)
             ##DESCARGANDO EL ARCHIVO
-            file_term = self.recognize_last_file_version()
+            file_term = self._recognize_last_file_version()
             xpath_download_file = (r'//*[@id='
                          r'"Mercado Mayorista/'
                          r'Liquidaciones del MME/'
@@ -205,7 +222,7 @@ class Downloader_files:
         f = open('LAST_DOWNLOADER_FILE.txt','r')
         last_code_file = f.read()
         f.close()
-        uploaded = self.download_last_file_uploaded_on_web(last_code_file)
+        uploaded = self.download_last_file_uploaded_on_web(last_code_file) 
         if uploaded[1]:
             #GUARDAMOS EL ARCHIVO EN UNA CARPETA DENTRO DEL PROYECTO
             #iDENTIFICANDO NOMBRE DE ARCHIVO
@@ -220,14 +237,12 @@ class Downloader_files:
             shutil.move(source,destination)
             with open('LAST_DOWNLOADER_FILE.txt','w') as f:
                 f.write(uploaded[0])
-            return uploaded[0],True
         else:
             print("NO SE HA SUBIDO NUEVOS ARCHIVOS")
-            return None,False
-            
-        self.driver.close()    
         
         
+    def CLOSE_DRIVER(self):
+        self.driver.close()
         
 
         
