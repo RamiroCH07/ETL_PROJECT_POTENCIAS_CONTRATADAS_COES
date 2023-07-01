@@ -114,13 +114,15 @@ class Estracter_data:
     def _get_end_row(self,hoja):
         return int(hoja.max_row)
     
-    def _estract_data_x_sheet_to_df(self,hoja):
+    def _estract_data_x_sheet_to_df(self,hoja,name_sheet):
         dic_df = {}
         if self._is_relevant_data(hoja):
             dic_fulled = {}
             start = self._get_start_row(hoja)
             end = self._get_end_row(hoja)
             for name in self.camp_names:
+                if name == self.camp_names[1]:
+                    exist_camp = True
                 if name == self.camp_names[9]:
                     coor,exist_camp = self._identify_coordinates_cell(hoja, name,key_name = 'FIJA')
                 elif name == self.camp_names[10]:
@@ -145,7 +147,10 @@ class Estracter_data:
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_TOTAL(MW)'] = self._get_data_from_column(hoja,start,end,letter_column_total)
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_HORA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hp)
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_HORA_FUERA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hfp)
-                                  
+                    elif name == self.camp_names[1]:
+                        num_rows = end-start+1 
+                        dic_df[name] = [name_sheet for _ in range(num_rows)]
+                        
                     else:
                         dic_df[name] = self._get_data_from_column(hoja, start, end, coor[1])
                 
@@ -178,7 +183,7 @@ class Estracter_data:
         df = pd.DataFrame(columns = columns_names)
         for name in self.sheet_names:
             print('EXTRAYENDO DATOS DE HOJA:'+' '+name)
-            df = pd.concat([df,self._estract_data_x_sheet_to_df(self.wb[name])])
+            df = pd.concat([df,self._estract_data_x_sheet_to_df(self.wb[name],name)])
         return df
             
             
