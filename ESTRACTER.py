@@ -57,13 +57,22 @@ class Estracter_data:
         return False 
 
         
-    def _identify_coordinates_cell(self,hoja,camp_name):
+    def _identify_coordinates_cell(self,hoja,camp_name,key_name = None):
         for row in hoja.iter_rows(min_row = 1, max_row = 30):
             for cell in row:
                 if str(type(cell.value)) == "<class 'str'>":
-                    port_sim = self.dic_lambdas[camp_name](cell.value)
+                    cell_value = str(cell.value)
+                    port_sim = self.dic_lambdas[camp_name](cell_value)
                     if port_sim > 0.77:
-                        return (int(cell.row),cell.column_letter),True
+                        if key_name is not None:
+                            for word in cell_value.split():
+                                print(word.upper(),key_name)
+                                sim_per = SequenceMatcher(a = key_name , b = word.upper()).ratio()   
+                                if sim_per > 0.9:
+                                    return(int(cell.row),cell.column_letter),True
+                                
+                        else:            
+                            return (int(cell.row),cell.column_letter),True
         return (None,None),False
     
     
@@ -112,7 +121,12 @@ class Estracter_data:
             start = self._get_start_row(hoja)
             end = self._get_end_row(hoja)
             for name in self.camp_names:
-                coor,exist_camp = self._identify_coordinates_cell(hoja, name)
+                if name == self.camp_names[9]:
+                    coor,exist_camp = self._identify_coordinates_cell(hoja, name,key_name = 'FIJA')
+                elif name == self.camp_names[10]:
+                    coor,exist_camp = self._identify_coordinates_cell(hoja, name,key_name = 'VARIABLE')
+                else:
+                    coor,exist_camp = self._identify_coordinates_cell(hoja, name)     
                 if exist_camp:
                     #cell = hoja[f'{coor[1]}{coor[0]}']
                     dic_fulled[name] = True
@@ -123,20 +137,15 @@ class Estracter_data:
                         letter_column_total = coor[1]
                         letter_column_hp = chr(column_letter_ascci_2)
                         letter_column_hfp = chr(column_letter_ascci_3)
-                        
-                        # extraes datos de la columna actual
                         if name == self.camp_names[9]:
                             dic_df['POTENCIA_CONTRATADA_FIJA_TOTAL(MW)'] = self._get_data_from_column(hoja,start,end,letter_column_total)
                             dic_df['POTENCIA_CONTRATADA_FIJA_HORA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hp)
                             dic_df['POTENCIA_CONTRATADA_FIJA_HORA_FUERA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hfp)
-                            
-                            
-                        if name == self.camp_names[10]:
+                        else:
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_TOTAL(MW)'] = self._get_data_from_column(hoja,start,end,letter_column_total)
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_HORA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hp)
                             dic_df['POTENCIA_CONTRATADA_VARIABLE_HORA_FUERA_PUNTA'] = self._get_data_from_column(hoja,start,end,letter_column_hfp)
-    
-                        #extraemos datos de las columnas siguientes      
+                                  
                     else:
                         dic_df[name] = self._get_data_from_column(hoja, start, end, coor[1])
                 
