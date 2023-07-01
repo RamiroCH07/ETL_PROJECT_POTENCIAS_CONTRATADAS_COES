@@ -176,7 +176,8 @@ class Downloader_files:
         month = td.get_text()
         
         generated_code = month+'_'+year
-        print(generated_code,cod_last_downloaded)
+        print("ULTIMO ARCHIVO SUBIDO A LA PAGINA:",generated_code)
+        print("ULTIMO ARCHIVO DESCARGADO Y REGISTRADO",cod_last_downloaded)
         if generated_code != cod_last_downloaded:
             print('SE HA SUBIDO NUEVO ARCHIVO')
             print('INICIANDO LA DESCARGA DE NUEVO ARCHIVO')
@@ -239,6 +240,7 @@ class Downloader_files:
                 f.write(uploaded[0])
         else:
             print("NO SE HA SUBIDO NUEVOS ARCHIVOS")
+        return uploaded
         
         
     def CLOSE_DRIVER(self):

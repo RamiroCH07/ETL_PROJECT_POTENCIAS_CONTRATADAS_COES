@@ -3,6 +3,8 @@ from DOWNLOADER import Downloader_files
 #%%
 
 ## TESTEANDO FUNCIONALIDADES BASCIAS DE LA CLASE DOWNLOADER
+
+
 # OBJETIVO: VERIFICAR LA CORRECTA FUNCIONALIDAD DEL MÉTODO"_go_potencias_contratadas"
 obj_downloader = Downloader_files()
 obj_downloader.go_potencias_contratadas()
@@ -25,3 +27,7 @@ for month in months:
 
 
 #%%%
+# OBJETIVO: VERIFICAR Y DESCARGAR EL ULTIMO ARCHIVO SUBIDO A LA PÁGINA DEL COES
+obj_downloader = Downloader_files()
+obj_downloader.FINISH_DOWNLOAD_FILE()
+obj_downloader.CLOSE_DRIVER()
