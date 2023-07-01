@@ -66,7 +66,7 @@ class Estracter_data:
                     if port_sim > 0.77:
                         if key_name is not None:
                             for word in cell_value.split():
-                                print(word.upper(),key_name)
+                                #print(word.upper(),key_name)
                                 sim_per = SequenceMatcher(a = key_name , b = word.upper()).ratio()   
                                 if sim_per > 0.9:
                                     return(int(cell.row),cell.column_letter),True
